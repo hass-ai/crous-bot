@@ -1,0 +1,11 @@
+Cookies_Hard.JSON
+data.db*
+bot_persistence.pickle
+bot.log*
+debug_logements_non-boursier.txt
+debug_logements_boursier.txt
+__pycache__/
+venv/
+.claude/
+.env
+

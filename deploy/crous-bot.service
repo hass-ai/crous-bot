@@ -1,0 +1,15 @@
+[Unit]
+Description=CROUS Logement Bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=crous
+WorkingDirectory=/home/crous/crous-bot
+ExecStart=/home/crous/crous-bot/venv/bin/python main.py
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
