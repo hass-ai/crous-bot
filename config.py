@@ -3,6 +3,10 @@
 # ============================================================
 import os 
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
+DATA_DIR=os.environ.get("DATA_DIR", ".")
+DB_FILE= os.path.join(DATA_DIR, "data.db")
+PERSISTENCE_FILE =os.path.join(DATA_DIR, "bot_persistence.pickle")
+COOKIES_FILE =os.path.join(DATA_DIR, "Cookies_Hard.JSON")
 
 # Chat_id des ADMINS : seuls ces chats peuvent utiliser les commandes
 # admin (mémo complet : /admin) et reçoivent les
@@ -132,7 +136,6 @@ USER_AGENT = (
 
 # Cookies de session (export JSON du navigateur) pour la vue "boursier".
 # Si le fichier n'existe pas, le bot tourne en vue non-boursier seule.
-COOKIES_FILE = "Cookies_Hard.JSON"
 
 # --- Timing ---
 # Avec l'API (1 requête par cycle au lieu de 60 pages), on peut scanner
@@ -154,11 +157,9 @@ SCAN_BURST_TENTATIVES = 10  # tentatives rapprochées avant d'abandonner
 SCAN_BURST_PAUSE = 2        # secondes entre chaque tentative rapprochée
 
 # --- Persistance ---
-DB_FILE = "data.db"
 # État des conversations /start-/changer en cours (survit à un redémarrage) :
 # quelqu'un pile au milieu du parcours d'inscription reprend exactement
 # où il en était, au lieu de devoir retaper /start.
-PERSISTENCE_FILE = "bot_persistence.pickle"
 
 # --- Debug ---
 # Écrit la liste COMPLÈTE des logements scannés dans

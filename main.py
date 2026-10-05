@@ -22,6 +22,10 @@ import diff
 import notifier
 import parser as crous_parser
 import scraper
+import os 
+
+
+
 
 # logs en console ET dans bot.log (rotation à 2 Mo, 2 archives) :
 # si la console gèle ou disparaît, l'historique reste consultable
@@ -30,10 +34,10 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
         logging.StreamHandler(),
-        RotatingFileHandler("bot.log", maxBytes=2_000_000,
-                            backupCount=2, encoding="utf-8"),
+        RotatingFileHandler(os.path.join(config.DATA_DIR,"bot.log"),maxBytes=2_000_000,backupCount=2,encoding="utf-8"),
     ],
 )
+
 # les logs de la lib HTTP de telegram sont trop bavards
 logging.getLogger("httpx").setLevel(logging.WARNING)
 log = logging.getLogger("main")
@@ -44,7 +48,7 @@ def _dump_logements(logements, total, source):
     Écrasé à chaque cycle -> reflète toujours le dernier scan."""
     try:
         nb_dispo = sum(1 for l in logements if l["disponible"])
-        with open(f"debug_logements_{source}.txt", "w", encoding="utf-8") as f:
+        with open(os.path.join(config.DATA_DIR,f"debug_logements_{source}.txt"), "w", encoding="utf-8") as f:
             f.write(f"Scan {source} du "
                     f"{datetime.now().strftime('%d/%m/%Y %H:%M:%S')} — "
                     f"{nb_dispo} disponibles / {len(logements)} logements "
