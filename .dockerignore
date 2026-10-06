@@ -1,0 +1,11 @@
+data.db*
+.env
+.env.example
+bot.log*
+Cookies_Hard.JSON
+venv/
+.git/
+__pycache__/
+bot_persistence.pickle
+debug_logements_*.txt
+.claude/
