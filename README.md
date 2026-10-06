@@ -46,6 +46,10 @@ ne comptent pas. Rappel automatique à J-3 avant expiration de l'accès.
 pip install -r requirements.txt
 python main.py
 ```
+cp .env.example .env
+docker compose up -d
+docker compose logs -f
+docker compose down
 
 Optionnel : déposer `Cookies_Hard.JSON` (export navigateur, connecté au
 site) à côté de `main.py` pour activer la vue boursier. Sans lui, tout le

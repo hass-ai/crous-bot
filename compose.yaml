@@ -1,0 +1,15 @@
+services:
+  bot:
+    build: .
+    image: crous-bot
+    env_file: .env
+    restart: unless-stopped
+    volumes:
+      - crous-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "find /data/bot.log -mmin -1 | grep -q ."]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+volumes:
+  crous-data:
