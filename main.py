@@ -7,6 +7,7 @@
 
 import asyncio
 import logging
+import os
 import time
 from collections import Counter, defaultdict
 from datetime import datetime
@@ -22,10 +23,6 @@ import diff
 import notifier
 import parser as crous_parser
 import scraper
-import os 
-
-
-
 
 # logs en console ET dans bot.log (rotation à 2 Mo, 2 archives) :
 # si la console gèle ou disparaît, l'historique reste consultable

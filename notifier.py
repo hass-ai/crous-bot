@@ -3,10 +3,9 @@
 #  (Telegram : 30 msg/s max en global, on plafonne à 25)
 # ============================================================
 
+import asyncio
 import html
 import logging
-
-import asyncio
 
 from aiolimiter import AsyncLimiter
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup

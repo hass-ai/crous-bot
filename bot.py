@@ -13,14 +13,19 @@
 #  Admin : /gencode, /unsub... (les non-admins sont ignorés en silence total).
 # ============================================================
 
+import asyncio
 import logging
 import re
 import secrets
 import time
 from datetime import datetime, timedelta
 
-from telegram import (InlineKeyboardButton, InlineKeyboardMarkup,
-                      ReplyKeyboardMarkup, Update)
+from telegram import (
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    ReplyKeyboardMarkup,
+    Update,
+)
 from telegram.constants import ParseMode
 from telegram.ext import (
     CallbackQueryHandler,
@@ -32,14 +37,17 @@ from telegram.ext import (
     filters,
 )
 
-import asyncio
-
 import config
 import db
 import notifier
 import scraper
-from parser import (dept_label, format_zone, normalize_city,
-                    parse_city_query, parse_rayon)
+from parser import (
+    dept_label,
+    format_zone,
+    normalize_city,
+    parse_city_query,
+    parse_rayon,
+)
 
 log = logging.getLogger(__name__)
 
@@ -646,7 +654,7 @@ async def recevoir_ville(update: Update, context: ContextTypes.DEFAULT_TYPE):
         saisie = saisie.split(",")[0].strip()
         notes.append("ℹ️ Une seule ville ici — je garde la première.")
 
-    ville_norm, cp_filtre, arr_invalide = parse_city_query(saisie)
+    ville_norm, cp_filtre, _arr_invalide = parse_city_query(saisie)
     if not ville_norm:
         await update.effective_message.reply_text(
             "❌ Je n'ai pas compris, redonne-moi un nom de ville."
@@ -686,7 +694,7 @@ async def recevoir_ville(update: Update, context: ContextTypes.DEFAULT_TYPE):
     affichage = nom_officiel
     ville_norm = normalize_city(nom_officiel)
 
-    if arr_invalide:
+    if _arr_invalide:
         notes.append(f"ℹ️ Cet arrondissement n'existe pas — je te mets "
                      f"sur tout {affichage}.")
     if notes:
@@ -942,7 +950,7 @@ async def recevoir_boursier(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 # ce qui ressemble à un code (tolère minuscules et espaces autour)
-_FORMAT_CODE = re.compile(r"crous[\s-]*[a-z0-9]{4}[\s-]*[a-z0-9]{4}", re.I)
+_FORMAT_CODE = re.compile(r"crous[\s-]*[a-z0-9]{4}[\s-]*[a-z0-9]{4}", re.IGNORECASE)
 
 
 async def recevoir_code(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1447,7 +1455,7 @@ async def setzone(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     saisie = " ".join(context.args[1:])
-    ville_norm, cp_filtre, arr_invalide = parse_city_query(saisie)
+    ville_norm, cp_filtre, _arr_invalide = parse_city_query(saisie)
     if not ville_norm:
         await update.effective_message.reply_text(f"❌ Je n'ai pas compris « {saisie} ».")
         return
@@ -2210,7 +2218,7 @@ async def on_confirmation_callback(update: Update, context: ContextTypes.DEFAULT
     Non -> rien de plus, il reste abonné normalement."""
     query = update.callback_query
     chat_id = str(update.effective_chat.id)
-    action, _, listing_id = query.data.partition(":")
+    action, _, _listing_id = query.data.partition(":")
     await query.answer()
     try:
         await query.edit_message_reply_markup(reply_markup=None)
@@ -2229,8 +2237,8 @@ async def on_confirmation_callback(update: Update, context: ContextTypes.DEFAULT
             "pour celle-là 🙂")
         return
 
-    db.creer_candidature(chat_id, listing_id)
-    log.info("Candidature ouverte : %s sur logement %s.", chat_id, listing_id)
+    db.creer_candidature(chat_id, _listing_id)
+    log.info("Candidature ouverte : %s sur logement %s.", chat_id, _listing_id)
     clavier_annuler = InlineKeyboardMarkup([[
         InlineKeyboardButton("↩️ Annuler ma candidature",
                              callback_data="annuler_candidature"),
@@ -2279,7 +2287,7 @@ async def on_validation_callback(update: Update, context: ContextTypes.DEFAULT_T
     Non -> candidature résolue, les notifications reprennent normalement."""
     query = update.callback_query
     chat_id = str(update.effective_chat.id)
-    action, _, listing_id = query.data.partition(":")
+    action, _, _listing_id = query.data.partition(":")
     await query.answer()
     try:
         await query.edit_message_reply_markup(reply_markup=None)

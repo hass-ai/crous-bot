@@ -190,8 +190,8 @@ def extract_city(adresse):
         ville_brute = avant[-1] if avant else ""
 
     # nettoyage version affichage : Cedex et arrondissement retirés
-    ville = re.sub(r"\s+cedex.*$", "", ville_brute, flags=re.I).strip()
-    ville = re.sub(r"\s+\d+(e|er|ème|eme)?$", "", ville, flags=re.I).strip()
+    ville = re.sub(r"\s+cedex.*$", "", ville_brute, flags=re.IGNORECASE).strip()
+    ville = re.sub(r"\s+\d+(e|er|ème|eme)?$", "", ville, flags=re.IGNORECASE).strip()
     return cp, ville.title(), normalize_city(ville_brute)
 
 

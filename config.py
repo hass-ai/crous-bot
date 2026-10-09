@@ -1,7 +1,8 @@
 # ============================================================
 #  CONFIG — tout ce qui se règle est ici, rien ailleurs
 # ============================================================
-import os 
+import os
+
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
 DATA_DIR=os.environ.get("DATA_DIR", ".")
 DB_FILE= os.path.join(DATA_DIR, "data.db")

@@ -1,0 +1,8 @@
+[lint]
+ignore = [
+    "DTZ005",  # dates stockées en heure locale dans la base ; fuseau fixé par TZ
+    "BLE001",  # un handler ne doit jamais faire planter le bot
+    "S110",    # erreurs Telegram bénignes, ignorées volontairement
+    "ISC004",  # chaînes longues coupées volontairement
+    "UP031",   # style de formatage, à moderniser plus tard
+]

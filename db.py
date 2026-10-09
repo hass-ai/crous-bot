@@ -420,8 +420,7 @@ def grant_access(chat_id, jours):
         base = datetime.now()
         if row and row[0]:
             actuel = datetime.fromisoformat(row[0])
-            if actuel > base:
-                base = actuel  # accès encore actif -> on prolonge
+            base = max(base, actuel)  # accès encore actif -> on prolonge
         fin = base + timedelta(days=jours)
         c.execute(
             "UPDATE users SET expire_le = ?, rappel_envoye = 0 WHERE chat_id = ?",
