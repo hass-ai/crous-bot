@@ -9,3 +9,6 @@ venv/
 .claude/
 .env
 *.swp
+.pytest_cache/
+.ruff_cache/
+
