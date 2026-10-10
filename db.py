@@ -179,9 +179,9 @@ def init_db():
             pass
         # renommage de la source « public » -> « non-boursier » (plus parlant)
         for table in ("known_listings", "villes_vues", "cps_vus"):
-            c.execute(f"UPDATE OR IGNORE {table} SET source = 'non-boursier' "
+            c.execute(f"UPDATE OR IGNORE {table} SET source = 'non-boursier' "  # nosec B608 - table vient d'un tuple fixe
                       f"WHERE source = 'public'")
-            c.execute(f"DELETE FROM {table} WHERE source = 'public'")
+            c.execute(f"DELETE FROM {table} WHERE source = 'public'")  # nosec B608 - table vient d'un tuple fixe
         c.execute("UPDATE OR IGNORE settings SET cle = 'last_scan_non-boursier' "
                   "WHERE cle = 'last_scan_public'")
         c.execute("DELETE FROM settings WHERE cle = 'last_scan_public'")
@@ -281,7 +281,7 @@ def get_rappels_batch(chat_ids):
     with _conn() as c:
         placeholders = ",".join("?" * len(chat_ids))
         rows = c.execute(
-            f"SELECT chat_id, nb_rappels FROM users WHERE chat_id IN ({placeholders})",
+            f"SELECT chat_id, nb_rappels FROM users WHERE chat_id IN ({placeholders})",  # nosec B608 - uniquement des ? générés, valeurs paramétrées
             tuple(chat_ids),
         ).fetchall()
     return {chat_id: nb for chat_id, nb in rows}
@@ -381,7 +381,7 @@ def get_subscribers_batch(zones, boursier):
     placeholders = ",".join("?" * len(zones))
     with _conn() as c:
         rows = c.execute(
-            "SELECT s.ville_norm, s.chat_id, s.cp_filter FROM subscriptions s "
+            "SELECT s.ville_norm, s.chat_id, s.cp_filter FROM subscriptions s "  # nosec B608 - uniquement des ? générés, valeurs paramétrées
             "JOIN users u ON u.chat_id = s.chat_id "
             f"WHERE s.ville_norm IN ({placeholders}) AND u.boursier = ? "
             "AND ((u.expire_le IS NOT NULL AND u.expire_le > ?)" + cond_admin + ")",
@@ -558,7 +558,7 @@ def get_active_chat_ids():
                   if admins else "")
     with _conn() as c:
         rows = c.execute(
-            "SELECT chat_id FROM users "
+            "SELECT chat_id FROM users "  # nosec B608 - uniquement des ? générés, valeurs paramétrées
             "WHERE (expire_le IS NOT NULL AND expire_le > ?)" + cond_admin,
             (_now(), *admins),
         ).fetchall()
@@ -713,7 +713,7 @@ def get_radius_subscribers(boursier):
                   if admins else "")
     with _conn() as c:
         rows = c.execute(
-            "SELECT s.chat_id, s.ville_norm FROM subscriptions s "
+            "SELECT s.chat_id, s.ville_norm FROM subscriptions s "  # nosec B608 - uniquement des ? générés, valeurs paramétrées
             "JOIN users u ON u.chat_id = s.chat_id "
             "WHERE s.ville_norm LIKE 'rayon:%' AND u.boursier = ? "
             "AND ((u.expire_le IS NOT NULL AND u.expire_le > ?)" + cond_admin + ")",
@@ -800,7 +800,7 @@ def get_utilisateurs_expires():
     placeholders = ",".join("?" * len(admins)) if admins else "''"
     with _conn() as c:
         return c.execute(
-            "SELECT chat_id, expire_le, inscrit_le, boursier FROM users "
+            "SELECT chat_id, expire_le, inscrit_le, boursier FROM users "  # nosec B608 - uniquement des ? générés, valeurs paramétrées
             "WHERE (expire_le IS NULL OR expire_le <= ?) "
             "AND logement_trouve = 0 "
             f"AND chat_id NOT IN ({placeholders})",
