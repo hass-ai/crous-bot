@@ -9,3 +9,6 @@ __pycache__/
 bot_persistence.pickle
 debug_logements_*.txt
 .claude/
+tmp/
+output/
+
