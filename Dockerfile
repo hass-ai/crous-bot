@@ -5,5 +5,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY *.py ./ 
 RUN useradd --create-home crous && mkdir /data && chown crous:crous /data
 ENV DATA_DIR=/data
+ENV TZ=Europe/Paris
 USER crous
 CMD ["python", "main.py"] 
