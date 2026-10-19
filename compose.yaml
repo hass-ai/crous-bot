@@ -1,9 +1,12 @@
 services:
   bot:
     build: .
-    image: crous-bot
+    image: ghcr.io/hass-ai/crous-bot:latest
     env_file: .env
     restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp
     volumes:
       - crous-data:/data
     healthcheck:
