@@ -54,7 +54,7 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v5
-      - run: docker build --pull -t ghcr.io/hass-ai/crous-bot:latest .
+      - run: docker build --pull -t ghcr.io/hass-ai/crous-bot:latest -t ghcr.io/hass-ai/crous-bot:${{ github.sha }} .
       - run: docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 ghcr.io/hass-ai/crous-bot:latest
       - run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-      - run: docker push ghcr.io/hass-ai/crous-bot:latest
+      - run: docker push --all-tags ghcr.io/hass-ai/crous-bot
