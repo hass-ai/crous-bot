@@ -14,5 +14,23 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    restart: unless-stopped
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=30d
+  grafana:
+    image: grafana/grafana:12.1.0
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
 volumes:
   crous-data:
+  prometheus-data:
+  grafana-data:

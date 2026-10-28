@@ -13,6 +13,7 @@ from collections import Counter, defaultdict
 from datetime import datetime
 from logging.handlers import RotatingFileHandler
 
+from prometheus_client import start_http_server
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, PicklePersistence
 
@@ -20,6 +21,7 @@ import bot
 import config
 import db
 import diff
+import metrics
 import notifier
 import parser as crous_parser
 import scraper
@@ -74,6 +76,7 @@ async def scan_source(application, session, source, vues, stats_jour, notif_perf
     disponibles = [l for l in logements if l["disponible"]]
     log.info("[%s] %d disponibles / %d scannés (annoncé : %s)",
              source, len(disponibles), len(logements), total)
+    metrics.LOGEMENTS.labels(source=source).set(len(disponibles))
 
     if config.DEBUG_DUMP and logements:
         _dump_logements(logements, total, source)
@@ -250,6 +253,7 @@ async def scan_source(application, session, source, vues, stats_jour, notif_perf
 
         log.info("[%s] %d nouveau(x) logement(s) -> %d abonné(s) notifié(s)",
                  source, len(nouveaux), len(envois))
+        metrics.NOTIFICATIONS.inc(len(envois))
 
     return logements
 
@@ -415,6 +419,10 @@ async def scan_loop(application):
         except Exception:
             log.exception("Erreur pendant le cycle de scan (on réessaie au prochain).")
             echec_cycle = True
+            metrics.SCANS_ECHEC.inc()
+
+        if not echec_cycle:
+            metrics.DERNIER_SCAN_OK.set_to_current_time()
 
         # la pause démarre APRÈS la fin des envois : sous forte charge le
         # cycle s'étire tout seul, la file ne peut jamais s'empiler
@@ -498,6 +506,7 @@ def main():
     bot.register_handlers(application)
 
     log.info("🚀 Bot démarré — /start sur Telegram pour s'inscrire.")
+    start_http_server(8000)  # page /metrics lue par Prometheus
     application.run_polling()  # bloquant, Ctrl+C pour arrêter
 
 
