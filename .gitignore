@@ -13,4 +13,7 @@ venv/
 .ruff_cache/
 tmp/
 output/
-
+.terraform/
+*.tfstate*
+anki-devsecops-crous.txt
+cours-revision-devsecops-crous.*
