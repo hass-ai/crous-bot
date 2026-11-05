@@ -118,7 +118,8 @@ OFFRE_NOTIF_COOLDOWN = 15 * 60
 # ce numéro — mais TOUJOURS vider known_listings pour les deux sources
 # juste après (sinon tous les logements de la nouvelle campagne seraient
 # vus comme "nouveaux" et déclencheraient une vague de notifications).
-TOOL_ID = 47
+# tool 48 = campagne 2026-2027 ouverte le 02/11/2026 (182 logements le 05/11/2026).
+TOOL_ID = 48
 API_URL = f"https://trouverunlogement.lescrous.fr/api/fr/search/{TOOL_ID}"
 PAGE_SIZE = 5000  # assez grand pour tout récupérer en 1 requête (~1400 actuellement)
 
